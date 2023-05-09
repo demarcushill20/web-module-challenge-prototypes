@@ -15,10 +15,35 @@
         + It should return a string with `name` and `age`. Example: "Mary, 50"
 */
 
-function Person() {
-
+function Person(name, age) {
+  // Assigns the 'name' argument to the 'name' property of the instance
+  this.name = name;
+  // Assigns the 'age' argument to the 'age' property of the instance
+  this.age = age;
+  // Initializes the 'stomach' property of the instance as an empty array
+  this.stomach = [];
 }
 
+// Defines the 'eat' method on the prototype of the constructor
+Person.prototype.eat = function(food) {
+  // Checks if the 'stomach' array of the instance has fewer than 10 items
+  if (this.stomach.length < 10) {
+    // Adds the 'food' argument to the 'stomach' array of the instance
+    this.stomach.push(food);
+  }
+};
+
+// Defines the 'poop' method on the prototype of the constructor
+Person.prototype.poop = function() {
+  // Empties the 'stomach' array of the instance
+  this.stomach = [];
+};
+
+// Defines the 'toString' method on the prototype of the constructor
+Person.prototype.toString = function() {
+  // Returns a string with the 'name' and 'age' properties of the instance
+  return this.name + ", " + this.age;
+};
 
 /*
   TASK 2
@@ -36,9 +61,40 @@ function Person() {
         + The `drive` method should return a string "I ran out of fuel at x miles!" x being `odometer`.
 */
 
-function Car() {
-
+function Car(model, milesPerGallon) {
+  // Initializes the 'model' property of the instance with the 'model' argument
+  this.model = model;
+  // Initializes the 'milesPerGallon' property of the instance with the 'milesPerGallon' argument
+  this.milesPerGallon = milesPerGallon;
+  // Initializes the 'tank' property of the instance to 0
+  this.tank = 0;
+  // Initializes the 'odometer' property of the instance to 0
+  this.odometer = 0;
 }
+
+// Defines the 'fill' method on the prototype of the constructor
+Car.prototype.fill = function(gallons) {
+  // Adds the 'gallons' argument to the 'tank' property of the instance
+  this.tank += gallons;
+};
+
+// Defines the 'drive' method on the prototype of the constructor
+Car.prototype.drive = function(distance) {
+  // Calculates the maximum distance that the car can travel with the current amount of fuel
+  var maxDistance = this.tank * this.milesPerGallon;
+  // Determines the actual distance that the car can travel based on the available fuel and the specified distance
+  var actualDistance = distance < maxDistance ? distance : maxDistance;
+  // Updates the 'odometer' property of the instance with the actual distance driven
+  this.odometer += actualDistance;
+  // Updates the 'tank' property of the instance based on the actual distance driven and the miles per gallon of the car
+  this.tank -= actualDistance / this.milesPerGallon;
+
+  // Checks if the car has run out of fuel
+  if (this.tank <= 0) {
+    // Returns a string indicating that the car has run out of fuel
+    return "I ran out of fuel at " + this.odometer + " miles!";
+  }
+};
 
 
 /*
@@ -49,18 +105,31 @@ function Car() {
         + Should return a string "Playing with x", x being the favorite toy.
 */
 
-function Baby() {
-
+function Baby(name, age, favoriteToy) {
+  // Calls the Person constructor with the 'name' and 'age' arguments to initialize the respective properties of the instance
+  Person.call(this, name, age);
+  // Initializes the 'favoriteToy' property of the instance with the 'favoriteToy' argument
+  this.favoriteToy = favoriteToy;
 }
 
+// Sets up the prototype chain to inherit from the Person prototype
+Baby.prototype = Object.create(Person.prototype);
 
+// Defines the 'play' method on the prototype of the constructor
+Baby.prototype.play = function() {
+  // Returns a string indicating that the baby is playing with its favorite toy
+  return "Playing with " + this.favoriteToy;
+};
+
+// Sets the constructor property of the Baby prototype to the Baby constructor
+Baby.prototype.constructor = Baby;
 /* 
   TASK 4
   In your own words explain the four principles for the "this" keyword below:
-  1. 
-  2. 
-  3. 
-  4. 
+  1. Global Binding: When this is used in a function that is called in the global scope, this will refer to the global object (e.g., window in a browser environment). For example, if you call a function with this inside it without an object context, this will refer to the global object.
+  2. Implicit Binding: When this is used in a function that is called as a method of an object, this will refer to the object that the method is called on. In other words, the object before the dot is the this context for the method. For example, if you call a method on an object with this inside it, this will refer to the object.
+  3. New Binding: When this is used in a constructor function, this will refer to the specific instance of the object that is being created. In other words, this is bound to the new object that is being created by the constructor. For example, if you use the new keyword to create an instance of a constructor function, this will refer to the newly created instance.
+  4. Explicit Binding: When this is used with methods like call, apply, or bind, this is explicitly set to the object passed as an argument. In other words, the first argument of these methods sets the this context for the function being called. For example, if you use the call method to call a function with a specific object as the this context, this will refer to the object passed as the first argument to call.
 */
 
 ///////// END OF CHALLENGE /////////
